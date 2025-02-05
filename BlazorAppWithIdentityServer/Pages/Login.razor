@@ -1,0 +1,36 @@
+﻿@page "/login"
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin" FormName="loginForm">
+    <InputText @bind-Value="loginModel.Username" placeholder="Username" />
+    <InputText type="password" @bind-Value="loginModel.Password" placeholder="Password" />
+    <button type="submit">Login</button>
+</EditForm>
+
+@code {
+    private LoginModel loginModel = new();
+
+    private async Task HandleLogin()
+    {
+        loginModel.Username = "kevanchen";
+        loginModel.Password = "1qaz@WSX";
+        if (AuthStateProvider is CustomAuthStateProvider customAuthStateProvider)
+        {
+            if (customAuthStateProvider.ValidateUser(loginModel.Username, loginModel.Password))
+            {
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                // 登入失敗處理
+            }
+        }
+    }
+
+    public class LoginModel
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+}
