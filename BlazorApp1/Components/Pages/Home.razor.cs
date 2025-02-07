@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace BlazorAppWithIdentityServer.Pages
+namespace BlazorApp1.Components.Pages
 {
-    public partial class Index
+    public partial class Home
     {
         private AuthenticationState authState;
         private List<string> userRoles = new List<string>();

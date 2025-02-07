@@ -1,0 +1,27 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h1>Welcome</h1>
+
+@if (authState != null && authState.User.Identity?.IsAuthenticated == true)
+{
+    <div>
+        <h2>Login Information</h2>
+        <p>Username: @authState.User.Identity.Name</p>
+        <h3>Roles:</h3>
+        <ul>
+            @foreach (var role in userRoles)
+            {
+                <li>@role</li>
+            }
+        </ul>
+        <a href="/logout">Logout</a>
+    </div>
+}
+else
+{
+    <p>Please <a href="/login">login</a></p>
+}

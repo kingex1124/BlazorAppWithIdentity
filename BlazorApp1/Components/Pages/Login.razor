@@ -1,0 +1,11 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@this.loginModel" OnValidSubmit="HandleLogin" FormName="loginForm">
+    <InputText @bind-Value="loginModel.Username" @bind-Value:event="oninput" placeholder="Username" />
+    <InputText type="password" @bind-Value="loginModel.Password" @bind-Value:event="oninput" placeholder="Password" />
+    <button type="submit">Login</button>
+</EditForm>
+

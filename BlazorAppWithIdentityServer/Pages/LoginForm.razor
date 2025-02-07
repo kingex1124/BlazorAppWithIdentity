@@ -1,0 +1,49 @@
+﻿@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
+
+<div>
+    @if (showError)
+    {
+        <div class="alert alert-danger">Invalid credentials!</div>
+    }
+
+    <div class="form-group">
+        <label>Username:</label>
+        <input type="text" @bind="username" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Password:</label>
+        <input type="password" @bind="password" class="form-control" />
+    </div>
+    <button class="btn btn-primary" @onclick="HandleLogin">Login</button>
+</div>
+
+@code {
+    private string username = "";
+    private string password = "";
+    private bool showError = false;
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            if (username == "kevanchen" && password == "1qaz@WSX")
+            {
+                var authStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+                await authStateProvider.LoginUserAsync(username, new[] { "admin", "Tester" });
+                NavigationManager.NavigateTo("/", true);
+            }
+            else
+            {
+                showError = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            throw;
+        }
+    
+    }
+}
+

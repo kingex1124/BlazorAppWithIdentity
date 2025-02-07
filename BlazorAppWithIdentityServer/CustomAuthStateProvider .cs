@@ -13,56 +13,53 @@ namespace BlazorAppWithIdentityServer
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+        public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var httpContext = _httpContextAccessor.HttpContext;
-            var authenticateResult = await httpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            if (authenticateResult.Succeeded)
-            {
-                return new AuthenticationState(authenticateResult.Principal);
-            }
-
-            return new AuthenticationState(new ClaimsPrincipal());
+            var user = _httpContextAccessor.HttpContext?.User ?? new ClaimsPrincipal(new ClaimsIdentity());
+            return Task.FromResult(new AuthenticationState(user));
         }
 
-        public bool ValidateUser(string username, string password)
+        public async Task LoginUserAsync(string username, string[] roles)
         {
-            if (username == "kevanchen" && password == "1qaz@WSX")
+            var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, username)
+        };
+
+            foreach (var role in roles)
             {
-                var claims = new[]
-                {
-                new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, "admin"),
-                new Claim(ClaimTypes.Role, "Tester")
-            };
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
 
-                var httpContext = _httpContextAccessor.HttpContext;
-                httpContext.SignInAsync(
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                await _httpContextAccessor.HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
-                    claimsPrincipal,
-                    new AuthenticationProperties { IsPersistent = true }
-                ).Wait();
-
-                NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
-                return true;
+                    principal,
+                    new AuthenticationProperties
+                    {
+                        IsPersistent = true,
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddHours(2)
+                    });
             }
-            return false;
+
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
-        public void Logout()
+        public async Task LogoutUserAsync()
         {
-            var httpContext = _httpContextAccessor.HttpContext;
-            httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).Wait();
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            }
 
-            NotifyAuthenticationStateChanged(
-                Task.FromResult(new AuthenticationState(new ClaimsPrincipal()))
-            );
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
     }
+
 
 
 }

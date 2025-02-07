@@ -1,26 +1,29 @@
 ﻿@page "/"
-@attribute [Authorize]
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
 
-<h1>Welcome</h1>
-
-@if (authState != null && authState.User.Identity?.IsAuthenticated == true)
-{
-    <div>
-        <h2>Login Information</h2>
-        <p>Username: @authState.User.Identity.Name</p>
-        <h3>Roles:</h3>
+<AuthorizeView>
+    <Authorized>
+        Hello, @context.User.Identity?.Name!
+        <p>Your roles:</p>
         <ul>
-            @foreach (var role in userRoles)
-            {
-                <li>@role</li>
-            }
+            @* @foreach (var claim in context.User.Claims.Where(c => c.Type == ClaimTypes.Role)) *@
+            @* { *@
+            @*     <li>@claim.Value</li> *@
+            @* } *@
         </ul>
-        <a href="/logout">Logout</a>
-    </div>
+        <button class="btn btn-danger" @onclick="Logout">Logout</button>
+    </Authorized>
+    <NotAuthorized>
+        <h2>Please log in</h2>
+        <LoginForm />
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+    private async Task Logout()
+    {
+        var authStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+        //authStateProvider.LogoutUser();
+        NavigationManager.NavigateTo("/", true);
+    }
 }
-else
-{
-    <p>Please <a href="/login">login</a></p>
-}
-
