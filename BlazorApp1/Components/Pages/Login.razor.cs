@@ -5,8 +5,10 @@ namespace BlazorApp1.Components.Pages
 {
     public partial class Login
     {
-        [SupplyParameterFromForm]
+        //[SupplyParameterFromForm]
         private LoginModel? loginModel { get; set; } = new();
+        [Inject]
+        public IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
 
         protected override void OnInitialized()
         {
@@ -16,30 +18,23 @@ namespace BlazorApp1.Components.Pages
         }
         private async Task HandleLogin()
         {
-            loginModel.Username = "kevanchen";
-            loginModel.Password = "1qaz@WSX";
             if (AuthStateProvider is CustomAuthStateProvider customAuthStateProvider)
             {
                 try
                 {
-                    HttpClient httpClient = new HttpClient();
-                    httpClient.BaseAddress = new Uri("www.google.com.tw");
-
-                    await httpClient.PostAsJsonAsync("api/Cookies/SetAccessTokenCookies", string.Empty);
+                    if (customAuthStateProvider.ValidateUser(loginModel.Username, loginModel.Password))
+                    {
+                        NavigationManager.NavigateTo("/");
+                    }
+                    else
+                    {
+                        // 登入失敗處理
+                    }
                 }
                 catch (Exception ex)
                 {
 
-                }
-
-
-                if (customAuthStateProvider.ValidateUser(loginModel.Username, loginModel.Password))
-                {
-                    NavigationManager.NavigateTo("/");
-                }
-                else
-                {
-                    // 登入失敗處理
+                    throw;
                 }
             }
         }
