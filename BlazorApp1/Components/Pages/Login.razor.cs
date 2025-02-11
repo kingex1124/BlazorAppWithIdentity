@@ -5,13 +5,14 @@ namespace BlazorApp1.Components.Pages
 {
     public partial class Login
     {
-        public LoginModel loginModel = new LoginModel();
+        [SupplyParameterFromForm]
+        private LoginModel? loginModel { get; set; } = new();
 
         protected override void OnInitialized()
         {
-            loginModel = new LoginModel();
-            loginModel.Username = "kevanchen";
-            loginModel.Password = "1qaz@WSX";
+            //loginModel = new LoginModel();
+            //loginModel.Username = "kevanchen";
+            //loginModel.Password = "1qaz@WSX";
         }
         private async Task HandleLogin()
         {

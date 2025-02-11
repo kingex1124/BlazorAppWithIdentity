@@ -4,8 +4,8 @@
 @inject NavigationManager NavigationManager
 
 <EditForm Model="@this.loginModel" OnValidSubmit="HandleLogin" FormName="loginForm">
-    <InputText @bind-Value="loginModel.Username" @bind-Value:event="oninput" placeholder="Username" />
-    <InputText type="password" @bind-Value="loginModel.Password" @bind-Value:event="oninput" placeholder="Password" />
+    <InputText @bind-Value="this.loginModel.Username" name="loginModel.Username" placeholder="Username" />
+    <InputText @bind-Value="this.loginModel.Password" name="loginModel.Password" placeholder="Password" />
     <button type="submit">Login</button>
 </EditForm>
 

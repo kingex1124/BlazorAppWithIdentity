@@ -1,0 +1,26 @@
+﻿@page "/testSample"
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+
+    <div class="mb-2">
+
+        <InputText disabled="@_isDisabled" 
+            class="form-control" 
+            placeholder="Enter Your Name" 
+            @bind-Value="_model.Name" />
+
+    </div>
+
+
+<div class="mb-2">
+    <button class="btn btn-primary" @onclick="OnDisable">Disable</button>
+</div>
+
+<div class="bg-dark text-white m-1 p-1">
+    <pre>Name: @_model.Name</pre>
+    <pre>Value: @_model.Value</pre>
+</div>
