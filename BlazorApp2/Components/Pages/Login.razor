@@ -1,0 +1,22 @@
+﻿@page "/login"
+@rendermode InteractiveServer
+<h3>登入</h3>
+
+<div>
+    <label for="username">帳號：</label>
+    <input type="text" id="username" name="username" @bind="loginModel.Username" />
+</div>
+
+<div>
+    <label for="password">密碼：</label>
+    <input type="password" id="password" name="password" @bind="loginModel.Password" />
+</div>
+
+<button @onclick="LoginAsync">登入</button>
+@if (!string.IsNullOrEmpty(message))
+{
+    <p style="color: red">@message</p>
+}
+
+
+
